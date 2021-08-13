@@ -35,7 +35,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     address=models.CharField(max_length=1000)
     is_doctor=models.BooleanField(default=False)
     status=models.IntegerField(default=0)
-    speciality=models.CharField(max_length=15)
+    speciality=models.CharField(max_length=15,null=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
