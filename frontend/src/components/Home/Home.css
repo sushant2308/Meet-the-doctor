@@ -1,0 +1,13 @@
+.card {
+    padding: 0;
+    border: none;
+
+}
+
+.card-img-top {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+    
+}

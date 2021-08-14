@@ -29,7 +29,7 @@ function Login() {
           }
 
   return (
-    <div className="container-fluid" style={{marginTop:"1rem"}}>
+    <div className="container-fluid" style={{marginTop:"3rem"}}>
     <div className="row no-gutter">
         
         <div className="col-md-8 col-lg-6">
