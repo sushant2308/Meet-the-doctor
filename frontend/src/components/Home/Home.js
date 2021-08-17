@@ -16,7 +16,7 @@ import uro from '../../Images/Urologist.png'
 
 function Home() {
     return (
-        <div className="container-fluid" style={{marginTop:"8rem"}}>
+        <div className="container-fluid" >
             <h5 className="heading">Looking for a Specialist?</h5>
             <div className="row">
                 <div className="col-md-4 col-lg-4">
@@ -27,7 +27,7 @@ function Home() {
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/derma"><img className="card-img-top" src={derma} alt=""/></Link>
+                        <Link to="/speciality/dermatologist"><img className="card-img-top" src={derma} alt=""/></Link>
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
@@ -44,46 +44,46 @@ function Home() {
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/gynae"><img className="card-img-top" src={gynae} alt=""/></Link>
+                        <Link to="/speciality/gynaeologist"><img className="card-img-top" src={gynae} alt=""/></Link>
                         
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/opth"><img className="card-img-top" src={opth} alt=""/></Link>
+                        <Link to="/speciality/ophthalmologist"><img className="card-img-top" src={opth} alt=""/></Link>
                      
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/ortho"><img className="card-img-top" src={ortho} alt=""/></Link>
+                        <Link to="/speciality/orthopedic"><img className="card-img-top" src={ortho} alt=""/></Link>
                         
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/pedia"><img className="card-img-top" src={pedia} alt=""/></Link>
+                        <Link to="/speciality/pediatric"><img className="card-img-top" src={pedia} alt=""/></Link>
                         
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/physio"><img className="card-img-top" src={physio} alt=""/></Link>
+                        <Link to="/speciality/physiotherapist"><img className="card-img-top" src={physio} alt=""/></Link>
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/physia"><img className="card-img-top" src={physia} alt=""/></Link>
+                        <Link to="/speciality/psychiatrist"><img className="card-img-top" src={physia} alt=""/></Link>
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/sex"><img className="card-img-top" src={sex} alt=""/></Link>
+                        <Link to="/speciality/sexologist"><img className="card-img-top" src={sex} alt=""/></Link>
                     </div>
                 </div>
                 <div className="col-md-4 col-lg-4">
                     <div className="card">
-                        <Link to="/speciality/uro"><img className="card-img-top" src={uro} alt=""/></Link>
+                        <Link to="/speciality/urologist"><img className="card-img-top" src={uro} alt=""/></Link>
                     </div>
                 </div>
             </div>

@@ -9,7 +9,7 @@ class Doctor extends Component {
         password: '',
         phone_no:'',
         address:'',
-        speciality:'',
+        speciality:'dentist',
         is_doctor:true,
         redirect:null,
       };
@@ -26,9 +26,9 @@ class Doctor extends Component {
         form_data.append('password', this.state.password);
         form_data.append('phone_no', this.state.phone_no);
         form_data.append('address', this.state.address);
-        form_data.append('is_doctor', this.state.is_seller);
+        form_data.append('is_doctor', this.state.is_doctor);
         form_data.append('speciality', this.state.speciality);
-        let url = `${process.env.REACT_APP_BACKEND_URL}/api/create/`;
+        let url = `http://127.0.0.1:8000/api/create/`;
         axios.post(url, form_data, {
           headers: {
             'content-type': 'multipart/form-data'
@@ -47,7 +47,7 @@ class Doctor extends Component {
         return <Redirect to={this.state.redirect} />
       }
         return (
-            <div className="container-fluid" style={{marginTop:"3rem"}}>
+            <div className="container-fluid">
             <div className="row no-gutter">
                 <div className="d-none d-md-flex col-md-4 col-lg-6 bg-image2"></div>
                 <div className="col-md-8 col-lg-6">
@@ -79,8 +79,21 @@ class Doctor extends Component {
                             <label htmlFor="address">Address</label>
                             </div>
                             <div className="form-label-group">
-                            <input type="text" id="gstid" value={this.state.gstid} onChange={this.handleChange} className="form-control" placeholder="Enter your Gst Number" required />
-                            <label htmlFor="gstid">speciality</label>
+                            <select className="form-control" id="speciality"  value={this.state.speciality} onChange={this.handleChange}>
+                                <option value="dentist">Dentist</option>
+                                <option value="dermatologist">Dermatologist</option>
+                                <option value="general">General Physician</option>
+                                <option value="ent">ENT</option>
+                                <option value="gynaeologist">Gynaeologist</option>
+                                <option value="ophthalmologist">Ophthalmologist</option>
+                                <option value="orthopedic">Orthopedic</option>
+                                <option value="pediatric">Pediatric</option>
+                                <option value="physiotherapist">Physiotherapist</option>
+                                <option value="psychiatrist">psychiatrist</option>
+                                <option value="sexologist">Sexologist</option>
+                                <option value="urologist">Urologist</option>
+                            </select>
+                            
                             </div>
                             <button className="btn btn-lg btn-success btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Register</button>
         
