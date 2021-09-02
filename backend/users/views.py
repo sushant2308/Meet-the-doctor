@@ -33,6 +33,6 @@ class ManageUserView(generics.RetrieveUpdateAPIView):
 
 @api_view(['GET', ])
 def speciality_doctors(request,slug):
-    doctors = User.objects.filter(is_doctor=True)
+    doctors = User.objects.filter(is_doctor=True,speciality=slug)
     serializer = UserSerializer(doctors,many=True) 
     return Response(serializer.data,)       

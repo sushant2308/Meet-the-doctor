@@ -1,8 +1,12 @@
-import React,{useState} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
 import './Navbar.css'
+import { useSelector, useDispatch } from "react-redux";
+import {logout} from "../../actions"
 function Navbar() {
-    const [isloggedin, setisloggedin] =  useState(false)
+  const isloggedin = useSelector(state => state.updatelogin);
+  console.log(isloggedin)
+  const dispatch = useDispatch();
     return (
         
             <nav className="navbar navbar-expand-lg nnavbar-dark bg-dark">
@@ -12,18 +16,30 @@ function Navbar() {
               </button>
               <div className="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul className="navbar-nav ml-auto">
-                  <li className="nav-item">
-                    <Link className="nav-link" to="/login">Login</Link>
-                  </li>
-                  <li className="nav-item dropdown">
-                    <Link className="nav-link dropdown-toggle" to="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      Sign up
-                    </Link>
-                    <div className="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                      <Link className="dropdown-item" to="/doctor-signup">Signup as Doctor</Link>
-                      <Link className="dropdown-item" to="/patient-signup">Signup as Patient</Link>
-                    </div>
-                  </li>
+                {isloggedin ?
+                          <li className="nav-item">
+                          <Link className="nav-link" to="/chat">Chats</Link>
+                          </li>
+                          :
+                          <li className="nav-item dropdown">
+                          <Link className="nav-link dropdown-toggle" to="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Sign-Up
+                          </Link>
+                          <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <Link className="dropdown-item" to="/doctor-signup">Signup as Doctor</Link>
+                            <Link className="dropdown-item" to="/patient-signup">Signup as Patient</Link>
+                          </div>
+                        </li>
+                    }
+                    {isloggedin ?
+                          <li className="nav-item">
+                          <Link className="nav-link" onClick={()=>dispatch(logout())}>Logout</Link>
+                          </li>
+                          :
+                          <li className="nav-item">
+                          <Link className="nav-link" to="/login">Login</Link>
+                          </li>
+                    }
                 </ul>
               </div>
             </nav>

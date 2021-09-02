@@ -2,10 +2,14 @@ import './Login.css';
 import React,{useState} from 'react';
 import axios from 'axios';
 import { Redirect } from 'react-router-dom';
+import {login} from "../../actions"
+import { useDispatch } from "react-redux";
+
 function Login() {
     const [email, setemail] = useState('')
     const [password, setpassword] = useState('')
     const [redirect, setredirect] = useState(null)
+    const dispatch = useDispatch();
       const handleSubmit = (e) => {
         e.preventDefault();
         let form_data = new FormData();
@@ -19,6 +23,7 @@ function Login() {
         })
             .then(res => {
               localStorage.setItem('token',res.data.token);
+              dispatch(login())
               setredirect("/");
             })
             .catch(err =>alert("Wrong email or password"))
@@ -29,7 +34,7 @@ function Login() {
           }
 
   return (
-    <div className="container-fluid" style={{marginTop:"3rem"}}>
+    <div className="container-fluid" style={{marginTop:""}}>
     <div className="row no-gutter">
         
         <div className="col-md-8 col-lg-6">
