@@ -51,11 +51,11 @@ class ChatSerializer(serializers.ModelSerializer):
         """
         Checks if recipient is a valid user and not the current user.
         """
-        if recipient == self.context['request'].user.username:
+        if recipient == self.context['request'].user.name:
             raise ValidationError('Cannot start chat with yourself')
 
         try:
-            return User.objects.get(username=recipient)
+            return User.objects.get(name=recipient)
         except User.DoesNotExist:
             raise serializers.ValidationError(f'{recipient} does not exist')
         except Exception as e:

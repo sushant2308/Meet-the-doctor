@@ -6,6 +6,7 @@ import Login from './components/Login/Login'
 import Home from './components/Home/Home';
 import Navbar from './components/Navbar/Navbar';
 import Speciality from './components/Speciality/Speciality';
+import ChatList from './components/Chat/ChatList';
 function App() {
   return (
     <div className="App">
@@ -18,6 +19,7 @@ function App() {
                   <Route path='/doctor-signup' component={()=><Doctor/>} exact/>
                   <Route path='/patient-signup/' component={()=><Patient/>} exact/>
                   <Route path='/speciality/:id' component={Speciality} exact/>
+                  <Route path='/chats' component={ChatList} exact/>
             </Switch>
           </Router>
 

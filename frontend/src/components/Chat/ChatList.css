@@ -1,0 +1,28 @@
+.ChatList {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	margin-top: 2em;
+}
+
+.ChatList .card {
+	width: 500px;
+}
+
+.ChatList .chatLink {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.ChatList .chatLink a {
+	text-decoration: none;
+	display: flex;
+	flex-direction: column;
+}
+.ChatList .chatLink a span:first-child {
+	font-weight: bold;
+}
+.ChatList .chatLink a span:last-child {
+	color: gray;
+}
