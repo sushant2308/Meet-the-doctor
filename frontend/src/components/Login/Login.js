@@ -15,18 +15,19 @@ function Login() {
         let form_data = new FormData();
         form_data.append('email', email);
         form_data.append('password', password);
-        let url = 'http://127.0.0.1:8000/api/token/';
+        let url = 'http://127.0.0.1:8000/api/login/';
         axios.post(url, form_data, {
           headers: {
             'content-type': 'multipart/form-data'
           }
         })
             .then(res => {
+              //alert(res)
               localStorage.setItem('token',res.data.token);
               dispatch(login())
               setredirect("/");
             })
-            .catch(err =>alert("Wrong email or password"))
+            .catch(err =>alert(err))
       };
 
         if (redirect) {

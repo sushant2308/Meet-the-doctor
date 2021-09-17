@@ -5,12 +5,16 @@ import axios from 'axios';
 function ChatList() {
 	
     const [chats,setchat]=useState([]) 
-
+	const token = localStorage.getItem('token')
 	useEffect(() => {
         const fetchData = async ()=>{
             try {
               let data=[]
-              const res = await axios.get(`http://127.0.0.1:8000/chat/`);
+              const res = await axios.get(`http://127.0.0.1:8000/chat/`,{
+				headers: {
+					'Authorization': `token ${token}`
+				  }
+			  });
               for(const dataobj of res.data){
                   data.push(dataobj);
                 
@@ -19,7 +23,7 @@ function ChatList() {
                
             }
             catch(err){
-    
+				alert(err)
             }
         }
     

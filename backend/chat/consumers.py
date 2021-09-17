@@ -18,9 +18,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         if self.scope['user'].is_anonymous:
+            print("here")
             await self.close()
         else:
             user = self.scope['user']
+
             chat_uuid = self.scope['url_route']['kwargs'].get('chat_id')
 
             try:
@@ -29,9 +31,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.room_name = f'chat.{chat_uuid}'
 
                 # join channel group
+                print("Accepted")
                 await self.channel_layer.group_add(self.room_name, self.channel_name)
                 await self.accept()
             except Chat.DoesNotExist:
+                print("Error")
                 await self.close()  # not a valid chat for this user -> close conn
 
     async def disconnect(self, code):
@@ -40,11 +44,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_discard(self.room_name, self.channel_name)
 
     async def receive(self, text_data):
+        
         sender = self.scope['user']
         payload = json.loads(text_data)
         message = payload.get('message')
         uuid = payload.get('uuid')
-
+        print(message)
         if not message or message.isspace():
             await self.send(json.dumps({
                 'type': 'error',
@@ -54,18 +59,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
             try:
                 # create message then send to channel group
                 msg_obj = await self.create_message(message, sender, uuid)
-
+                print("Sending")
                 await self.channel_layer.group_send(
                     self.room_name,
                     {
-                        'type': 'chat_recieved',
+                        'type': 'chat_message',
                         'message': message,
                         'uuid': str(msg_obj.uuid),
                         'sender_channel_name': self.channel_name,
                     }
                 )
+                
             except Exception as e:
                 # TODO: log error here
+                print("Error")
                 await self.send(json.dumps({
                     'type': 'error',
                     'data': {
@@ -73,14 +80,13 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     }
                 }))
 
-    async def chat_recieved(self, event):
-        # ignore message if sent to self
-        if self.channel_name != event['sender_channel_name']:
-            await self.send(json.dumps({
-                'type': 'chat_message',
-                'data': {
-                    'message': event['message'],
-                    'uuid': event['uuid'],
-                    'recieved': True
-                }
-            }))
+    # Receive message from room group
+    async def chat_message(self, event):
+        # Send message to WebSocket
+        await self.send(json.dumps({
+            'type': 'chat_message',
+            'data': {
+                'message': event['message'],
+                'uuid': event['uuid'],
+            }
+        }))

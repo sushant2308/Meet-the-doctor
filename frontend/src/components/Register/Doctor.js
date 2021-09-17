@@ -28,7 +28,7 @@ class Doctor extends Component {
         form_data.append('address', this.state.address);
         form_data.append('is_doctor', this.state.is_doctor);
         form_data.append('speciality', this.state.speciality);
-        let url = `http://127.0.0.1:8000/api/create/`;
+        let url = `http://127.0.0.1:8000/api/register/`;
         axios.post(url, form_data, {
           headers: {
             'content-type': 'multipart/form-data'

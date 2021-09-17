@@ -1,14 +1,7 @@
 from rest_framework import serializers
-from rest_framework.exceptions import APIException, ValidationError
-from logging import getLogger
-
+from rest_framework.exceptions import APIException
 from .models import ChatMessage, Chat
 from users.serializers import UserSerializer
-from users.models import User
-
-
-logger = getLogger('chat_serializers')
-
 
 class ChatMessageSerializer(serializers.ModelSerializer):
     recieved = serializers.SerializerMethodField('is_reciever')
@@ -19,10 +12,11 @@ class ChatMessageSerializer(serializers.ModelSerializer):
         messages.
         """
         try:
+            #print('Request passed to context')
             user = self.context['request'].user
             return user != obj.sender
         except KeyError:
-            logger.exception('Request not passed to context')
+            #print('Request not passed to context')
             raise APIException()
 
     class Meta:
@@ -32,42 +26,22 @@ class ChatMessageSerializer(serializers.ModelSerializer):
 
 class ChatSerializer(serializers.ModelSerializer):
     user = serializers.SerializerMethodField('get_other_user')
-    recipient = serializers.CharField(max_length=150, write_only=True)
-
+    messages=ChatMessageSerializer(many=True,read_only=True)
     def get_other_user(self, obj):
         """
         Returns the other users model.
         """
         try:
+            #print(self.context.get('request').user)
             if obj.user1_id == self.context['request'].user.id:
                 return UserSerializer(obj.user2).data
 
             return UserSerializer(obj.user1).data
         except KeyError:
-            logger.exception('Request not passed to context')
+            #print('Request not passed to context chat')
             raise APIException()
-
-    def validate_recipient(self, recipient):
-        """
-        Checks if recipient is a valid user and not the current user.
-        """
-        if recipient == self.context['request'].user.name:
-            raise ValidationError('Cannot start chat with yourself')
-
-        try:
-            return User.objects.get(name=recipient)
-        except User.DoesNotExist:
-            raise serializers.ValidationError(f'{recipient} does not exist')
-        except Exception as e:
-            logger.exception('Recipient validation error')
-            raise APIException('Could not validated chat recipient', 500)
-
-    def create(self, validated_data):
-        user1 = self.context['request'].user
-        user2 = validated_data['recipient']
-        return Chat.objects.create(user1=user1, user2=user2)
 
     class Meta:
         model = Chat
-        fields = ('uuid', 'date_created', 'user', 'recipient')
-        read_only_fields = ('uuid', 'date_created', 'user')
+        fields = ('uuid', 'date_created', 'user','messages',)
+        read_only_fields = ('uuid', 'date_created', 'user',)

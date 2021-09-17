@@ -1,17 +1,24 @@
 import React,{useState,useEffect} from 'react';
-import {Link} from 'react-router-dom';
 import axios from 'axios';
-import {Redirect, useHistory} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
+import { useSelector} from "react-redux";
 function Specialist({ match }) {
     const name=match.params.id
     const [q,setq]=useState("")
     const [Data,setData] = useState([]);
+    const isloggedin = useSelector(state => state.updatelogin);
     const history = useHistory();
+    const token = localStorage.getItem('token')
     useEffect(() => {
         const fetchData = async ()=>{
         try {
           let data=[]
-          const res = await axios.get(`http://127.0.0.1:8000/api/speciality/${name}/`);
+          
+          const res = await axios.get(`http://127.0.0.1:8000/api/speciality/${name}/`,{
+            headers: {
+              "Authorization": `token ${token}`
+            }
+          });
           for(const dataobj of res.data){
               data.push(dataobj);
             
@@ -26,22 +33,32 @@ function Specialist({ match }) {
 
     fetchData();
   
-    },[name]);
-    function createchat({username}){
-      alert("fired")
-        axios.post(`http://127.0.0.1:8000/chat/`,{username})
-        .then(res => {
-          const chat_uuid = res.data.uuid;
-          history.push(`/chat/${chat_uuid}`);
-        })
-        .catch(err => {
-            
-        });
+    },[name,]);
+    
+    function createchat(id){
+        if(isloggedin){
+            console.log(id)
+            axios.get(`http://127.0.0.1:8000/chat/create_chatlist/${id}/`,{
+              headers: {
+                "Authorization": `token ${token}`
+              }
+            })
+                .then(res => {
+                  history.push("/chat/"+res.data.chat_id)
+                })
+                .catch(err => console.log(err))
+          
+        }
+        else{
+          alert('Please Login/Register to chat')
+        }
+
     }
     function search(data){
       return data.filter((doctor)=>doctor.name.toLowerCase().indexOf(q)>-1 || doctor.address.toLowerCase().indexOf(q)>-1)
      
    }
+
     return (
       <div>
           <h1>Here are some of the {name} online right now</h1>
@@ -62,11 +79,12 @@ function Specialist({ match }) {
               <div className="row">
                 {
                     search(Data).map((item,i) => (
+                      
                       <div className="d-flex col-12 comment-row m-t-0" style={{marginTop:"3rem"}} key={i}>
                         <div className="p-2"><img src={`https://joeschmoe.io/api/v1/doctor`+i} alt="user" width="150" className="rounded-circle"/></div>
                         <div className="comment-text w-100">
                             <h6 className="font-medium">{item.name}</h6> <span className="m-b-15 d-block">{item.address} </span>
-                            <div className="comment-footer"> <span className="text-muted float-right">{item.speciality}</span> <button type="button" className="btn btn-success btn-sm" onClick={()=>createchat(item.name)}>Chat</button></div>
+                            <div className="comment-footer"> <span className="text-muted float-right">{item.speciality}</span> <button type="button" className="btn btn-success btn-sm" onClick={()=>createchat(item.id)}>Chat</button></div>
                         </div>
                       </div>
                   ))

@@ -2,8 +2,9 @@ from django.urls import path
 
 from . import views
 
+app_name = 'chat'
 urlpatterns = [
-    path('<chat_uuid>/', views.ChatMessageListView.as_view()),
-    path('<chat_uuid>/delete/', views.ChatDestroyView.as_view()),
-    path('', views.ChatListCreateView.as_view())
+    path('get_chatlist/<slug:slug>/', views.get_chatlist),
+    path('create_chatlist/<slug:slug>/', views.create_chatlist),
+    path('delete_chatlist/<slug:slug>/', views.delete_chatlist)
 ]

@@ -6,8 +6,8 @@ from django.conf.urls.static import static
 app_name = 'users'
 
 urlpatterns = [
-    path('create/', views.CreateUserView.as_view(), name='create'),#checked
-    path('token/', views.CreateTokenView.as_view(), name='token'),#checked
-    path('me/', views.ManageUserView.as_view(), name='me'),#checked
+    path('register/', views.CreateUserView.as_view(), name='create'),
+    path('login/', views.CreateTokenView.as_view(), name='token'),
+    path('me/', views.ManageUserView.as_view(), name='me'),
     path('speciality/<slug:slug>/',views.speciality_doctors,name='speciality'),#checked
 ]

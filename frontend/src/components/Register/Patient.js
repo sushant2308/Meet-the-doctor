@@ -25,8 +25,8 @@ class Patient extends Component {
         form_data.append('password', this.state.password);
         form_data.append('phone_no', this.state.phone_no);
         form_data.append('address', this.state.address);
-        form_data.append('is_doctor', this.state.is_seller);
-        let url = `${process.env.REACT_APP_BACKEND_URL}/api/create/`;
+        form_data.append('is_doctor', this.state.is_doctor);
+        let url = `${process.env.REACT_APP_BACKEND_URL}/api/register/`;
         axios.post(url, form_data, {
           headers: {
             'content-type': 'multipart/form-data'
@@ -36,8 +36,8 @@ class Patient extends Component {
               this.setState({ redirect: "/login" });
             })
             .catch(err => {
-              alert("Already Registered")
-              console.log(err);
+              alert(err)
+              
             })
       };
     render() {
@@ -57,24 +57,24 @@ class Patient extends Component {
                         <form onSubmit={this.handleSubmit}>
                         <div className="form-label-group">
                             <input type="text" id="name" value={this.state.name} onChange={this.handleChange} className="form-control" placeholder="Enter your name" required/>
-                            <label for="name">Name</label>
+                            <label htmlFor="name">Name</label>
                             </div>
                             <div className="form-label-group">
                             <input type="email" id="email" value={this.state.email} onChange={this.handleChange} className="form-control" placeholder="Email address" required />
-                            <label for="email">Email address</label>
+                            <label htmlFor="email">Email address</label>
                             </div>
         
                             <div className="form-label-group">
                             <input type="password" id="password" value={this.state.password} onChange={this.handleChange} className="form-control" placeholder="Password" required/>
-                            <label for="password">Password</label>
+                            <label htmlFor="password">Password</label>
                             </div>
                             <div className="form-label-group">
                             <input type="text" id="phone_no" value={this.state.phone_no} onChange={this.handleChange} className="form-control" placeholder="Enter your phone no" required />
-                            <label for="phone_no">Phone No.</label>
+                            <label htmlFor="phone_no">Phone No.</label>
                             </div>
                             <div className="form-label-group">
                             <input type="text" id="address" value={this.state.address} onChange={this.handleChange} className="form-control" placeholder="Enter your Address" required />
-                            <label for="address">Address</label>
+                            <label htmlFor="address">Address</label>
                             </div>
                             <button className="btn btn-lg btn-primary btn-block btn-login text-uppercase font-weight-bold mb-2" type="submit">Register</button>
         

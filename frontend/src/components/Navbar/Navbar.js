@@ -18,7 +18,7 @@ function Navbar() {
                 <ul className="navbar-nav ml-auto">
                 {isloggedin ?
                           <li className="nav-item">
-                          <Link className="nav-link" to="/chat">Chats</Link>
+                          <Link className="nav-link" to="/chats">Chats</Link>
                           </li>
                           :
                           <li className="nav-item dropdown">
