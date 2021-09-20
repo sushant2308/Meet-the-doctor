@@ -33,5 +33,5 @@ class ChatMessage(models.Model):
                                on_delete=models.CASCADE)
     chat = models.ForeignKey('Chat', null=False, on_delete=models.CASCADE,related_name="messages")
 
-    def __str__(self) -> str:
-        return f'<ChatMessage chat={self.chat.uuid} sender={self.sender.username}>'
+    class Meta:
+        ordering = ['-date_sent',]

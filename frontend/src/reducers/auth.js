@@ -1,4 +1,4 @@
-const initialState = false;
+const initialState = localStorage.getItem('token')?true:false;
 
 const updatelogin = (state = initialState, action) => {
     if(action.type==="LOGIN") return true;

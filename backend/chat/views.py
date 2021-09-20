@@ -19,9 +19,9 @@ def create_chatlist(request,slug):
     user1 = request.user
     user2 = get_object_or_404(User,id=slug)
 
-    if(Chat.objects.filter(user1=user1,user2=user2).first()):
+    if(Chat.objects.filter(user1=user1,user2=user2).exists()):
         chat=Chat.objects.get(user1=user1,user2=user2)
-        Response({"chat_id":chat.uuid})
+        return Response({"chat_id":chat.uuid})
 
     chat= Chat.objects.create(user1=user1, user2=user2)
 
