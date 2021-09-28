@@ -6,11 +6,11 @@ import './ChatPage.css';
 
 function ChatPage({ match}) {
 	const chat_uuid = match.params.id
-	const [user,setuser]=useState("")
+	const [user,setuser]=useState({})
 	const [messages,setmessages]=useState([])
 	const [notifications,setNotifications] = useState('')
 	const ws = useRef(null);
-	const [newMsg, setNewMsg] = useState('');
+	const [newMsg, setNewMsg] = useState("");
 	const token = localStorage.getItem('token')
 	useEffect(() => {
 		ws.current = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${chat_uuid}/?token=${token}`);
@@ -24,7 +24,7 @@ function ChatPage({ match}) {
 		};
 		console.log(notifications)
 		// load previous chat messages
-		axios.get(`http://127.0.0.1:8000/chat/get_chatlist/${chat_uuid}/`,{
+		axios.get(`http://127.0.0.1:8000/chat/get_chat/${chat_uuid}/`,{
 			headers: {
 				"Authorization": `token ${token}`
 			  }
@@ -32,11 +32,14 @@ function ChatPage({ match}) {
         .then(res => 
 			
           {setmessages(res.data.messages)
-		  setuser(res.data.user.name)
+		  setuser(res.data.user)
 }
 		  
         );
-
+		ws.current.onopen = () => {
+			ws.current.send(JSON.stringify({type:"read"}));
+		  };
+		
 		return () => ws.current.close();
 	}, [notifications]);
 	console.log(messages)
@@ -45,13 +48,13 @@ function ChatPage({ match}) {
 
 		// check if newMsg is valid
 		if (newMsg && newMsg.replace(/\s+/g, '') !== '') {
-			const messageData = {uuid: uuid(), message: newMsg, recieved: false};
+			const messageData = {uuid: uuid(), message: newMsg, recieved: false,type:"message"};
 			ws.current.send(JSON.stringify(messageData));
 	
 			setNewMsg('');
 		}
 	};
-
+	console.log()
 	// submit form when enter pressed in text area
 	const onKeyDown = e => {
 		if (e.keyCode === 13 && e.shiftKey === false && newMsg) sendNewMsg(e);
@@ -61,7 +64,8 @@ function ChatPage({ match}) {
 		<div className="ChatPage">
 			
 			<div className="msgCont">
-			<h3>You are chatting with {user}</h3>
+			<h3>You are chatting with {user.name}</h3>
+			{user.status===1?<h4 className="text-success">Online</h4>:<h4 className="text-danger">Offline</h4>}
 				<div className="msgBox">
 					<div className="msgDisplay">
  						{

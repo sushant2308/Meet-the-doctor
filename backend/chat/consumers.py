@@ -2,9 +2,11 @@ import json
 from django.db.models import Q
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from django.dispatch.dispatcher import receiver
 from .models import Chat, ChatMessage
 
 
+#Consumer for User chat
 class ChatConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
@@ -15,10 +17,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
     def create_message(self, message, sender, uuid):
         return ChatMessage.objects.create(message=message, uuid=uuid, sender=sender,
                                           chat=self.chat)
+    @database_sync_to_async
+    def read_message(self,chat,user):
+        if chat.user1.id == user.id:
+            return chat.user2.id
+        
+        return chat.user1.id
+
 
     async def connect(self):
         if self.scope['user'].is_anonymous:
-            print("here")
             await self.close()
         else:
             user = self.scope['user']
@@ -30,8 +38,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 self.chat = await self.get_chat(chat_uuid, user)
                 self.room_name = f'chat.{chat_uuid}'
 
-                # join channel group
-                print("Accepted")
                 await self.channel_layer.group_add(self.room_name, self.channel_name)
                 await self.accept()
             except Chat.DoesNotExist:
@@ -47,38 +53,42 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
         sender = self.scope['user']
         payload = json.loads(text_data)
-        message = payload.get('message')
-        uuid = payload.get('uuid')
-        print(message)
-        if not message or message.isspace():
-            await self.send(json.dumps({
-                'type': 'error',
-                'data': {'message': 'Please enter a message'}
-            }))
-        else:
-            try:
-                # create message then send to channel group
-                msg_obj = await self.create_message(message, sender, uuid)
-                print("Sending")
-                await self.channel_layer.group_send(
-                    self.room_name,
-                    {
-                        'type': 'chat_message',
-                        'message': message,
-                        'uuid': str(msg_obj.uuid),
-                        'sender_channel_name': self.channel_name,
-                    }
-                )
-                
-            except Exception as e:
-                # TODO: log error here
-                print("Error")
+        type=payload.get('type')
+        if(type=="message"):
+            message = payload.get('message')
+            uuid = payload.get('uuid')
+            if not message or message.isspace():
                 await self.send(json.dumps({
                     'type': 'error',
-                    'data': {
-                        'message': 'There was an error sending your message'
-                    }
+                    'data': {'message': 'Please enter a message'}
                 }))
+            else:
+                try:
+                    # create message then send to channel group
+                    msg_obj = await self.create_message(message, sender, uuid)
+                    print("Sending")
+                    await self.channel_layer.group_send(
+                        self.room_name,
+                        {
+                            'type': 'chat_message',
+                            'message': message,
+                            'uuid': str(msg_obj.uuid),
+                            'sender_channel_name': self.channel_name,
+                        }
+                    )                   
+                except Exception as e:
+                    # TODO: log error here
+                    print("Error")
+                    await self.send(json.dumps({
+                        'type': 'error',
+                        'data': {
+                            'message': 'There was an error sending your message'
+                        }
+                    }))
+        
+        if type=="read":
+            await self.read_message(self.chat, sender)
+
 
     # Receive message from room group
     async def chat_message(self, event):
@@ -90,3 +100,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'uuid': event['uuid'],
             }
         }))
+
+    '''
+    This method changes the 'read' field
+    of all relevent Messages in the database to 'True'. 
+    '''
+    async def _messages_read(self,chat,user):
+        query = ChatMessage.objects.filter(chat=chat).exclude(sender=user)
+        print(query)
+        for message in query:
+            message.is_read = True
+            message.save()   
+
+
+
+
+
+
+
+
+
+            

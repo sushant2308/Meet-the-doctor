@@ -3,10 +3,19 @@ import {Link} from 'react-router-dom';
 import './Navbar.css'
 import { useSelector, useDispatch } from "react-redux";
 import {logout} from "../../actions"
+import axios from 'axios';
 function Navbar() {
   const isloggedin = useSelector(state => state.updatelogin);
-  console.log(isloggedin)
+
   const dispatch = useDispatch();
+  function loggedout(){
+    const res=axios.get(`http://127.0.0.1:8000/api/logout/`,{headers: {
+      "Authorization": `token ${localStorage.getItem('token')}`
+    }})
+    localStorage.removeItem('token')
+    dispatch(logout())
+
+}
     return (
         
             <nav className="navbar navbar-expand-lg nnavbar-dark bg-dark">
@@ -33,7 +42,7 @@ function Navbar() {
                     }
                     {isloggedin ?
                           <li className="nav-item">
-                          <Link className="nav-link" onClick={()=>dispatch(logout())}>Logout</Link>
+                          <Link className="nav-link" onClick={loggedout}>Logout</Link>
                           </li>
                           :
                           <li className="nav-item">

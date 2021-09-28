@@ -32,6 +32,6 @@ class ChatMessage(models.Model):
     sender = models.ForeignKey(User, null=False, related_name='sender',
                                on_delete=models.CASCADE)
     chat = models.ForeignKey('Chat', null=False, on_delete=models.CASCADE,related_name="messages")
-
+    is_read = models.BooleanField(default=False)
     class Meta:
         ordering = ['-date_sent',]

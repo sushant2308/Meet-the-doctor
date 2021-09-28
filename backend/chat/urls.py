@@ -4,7 +4,8 @@ from . import views
 
 app_name = 'chat'
 urlpatterns = [
-    path('get_chatlist/<slug:slug>/', views.get_chatlist),
-    path('create_chatlist/<slug:slug>/', views.create_chatlist),
-    path('delete_chatlist/<slug:slug>/', views.delete_chatlist)
+    path('get_chat/<slug:slug>/', views.get_chat),
+    path('create_chat/<slug:slug>/', views.create_chat),
+    path('delete_chat/<slug:slug>/', views.delete_chat),
+    path('user_chatlist/', views.get_userchatlist),
 ]

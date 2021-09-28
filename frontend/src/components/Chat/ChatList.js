@@ -2,6 +2,7 @@ import React, {useEffect,useState} from 'react';
 import { Card, ListGroup} from 'react-bootstrap';
 import './ChatList.css';
 import axios from 'axios';
+import moment from 'moment';
 function ChatList() {
 	
     const [chats,setchat]=useState([]) 
@@ -10,7 +11,7 @@ function ChatList() {
         const fetchData = async ()=>{
             try {
               let data=[]
-              const res = await axios.get(`http://127.0.0.1:8000/chat/`,{
+              const res = await axios.get(`http://127.0.0.1:8000/chat/user_chatlist/`,{
 				headers: {
 					'Authorization': `token ${token}`
 				  }
@@ -23,14 +24,17 @@ function ChatList() {
                
             }
             catch(err){
-				alert(err)
+				
             }
         }
-    
-        fetchData();
+		const interval = setInterval(() => {
+			fetchData();
+		  }, 1000);
+		return () => clearInterval(interval);
+        
 	}, []);
 
-
+	console.log(chats)
 
 	return (
 		<div className="ChatList">
@@ -44,6 +48,8 @@ function ChatList() {
 							<ListGroup.Item key={chat.uuid} className="chatLink">
 								<a href={`/chat/${chat.uuid}`}>
 									<span>{chat.user.name}</span>
+									<span>{chat.messages.length} new messages</span>
+									<span>{moment(chat.messages.date_sent).fromNow()}</span>
 								</a>
 							</ListGroup.Item>
 						))}

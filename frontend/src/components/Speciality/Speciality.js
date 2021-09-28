@@ -14,11 +14,8 @@ function Specialist({ match }) {
         try {
           let data=[]
           
-          const res = await axios.get(`http://127.0.0.1:8000/api/speciality/${name}/`,{
-            headers: {
-              "Authorization": `token ${token}`
-            }
-          });
+          const res = await axios.get(`http://127.0.0.1:8000/api/speciality/${name}/`,
+          );
           for(const dataobj of res.data){
               data.push(dataobj);
             
@@ -34,19 +31,23 @@ function Specialist({ match }) {
     fetchData();
   
     },[name,]);
-    
+    console.log(Data)
     function createchat(id){
         if(isloggedin){
-            console.log(id)
-            axios.get(`http://127.0.0.1:8000/chat/create_chatlist/${id}/`,{
-              headers: {
-                "Authorization": `token ${token}`
-              }
-            })
-                .then(res => {
-                  history.push("/chat/"+res.data.chat_id)
-                })
-                .catch(err => console.log(err))
+            if(localStorage.getItem("userId")===id){
+                alert('You cannot start chat with yourself ')
+            }
+            else{
+              axios.get(`http://127.0.0.1:8000/chat/create_chat/${id}/`,{
+                headers: {
+                  "Authorization": `token ${token}`
+                }
+              })
+                  .then(res => {
+                    history.push("/chat/"+res.data.chat_id)
+                  })
+                  .catch(err => console.log(err))
+            }
           
         }
         else{
@@ -81,10 +82,16 @@ function Specialist({ match }) {
                     search(Data).map((item,i) => (
                       
                       <div className="d-flex col-12 comment-row m-t-0" style={{marginTop:"3rem"}} key={i}>
-                        <div className="p-2"><img src={`https://joeschmoe.io/api/v1/doctor`+i} alt="user" width="150" className="rounded-circle"/></div>
+                        <div className="p-2"><img src={`https://100k-faces.glitch.me/random-image`} alt="user" width="150" className="rounded-circle"/></div>
                         <div className="comment-text w-100">
                             <h6 className="font-medium">{item.name}</h6> <span className="m-b-15 d-block">{item.address} </span>
-                            <div className="comment-footer"> <span className="text-muted float-right">{item.speciality}</span> <button type="button" className="btn btn-success btn-sm" onClick={()=>createchat(item.id)}>Chat</button></div>
+                            <div className="comment-footer">
+                               <button type="button" className="btn btn-success btn-sm" onClick={()=>createchat(item.id)}>Chat</button>
+                               { item.status ===1 ? 
+                               <span className="text-success float-right">Online</span>
+                              :<span className="text-danger float-right">Offline</span>
+                              } 
+                            </div>
                         </div>
                       </div>
                   ))

@@ -16,7 +16,7 @@ class ChatMessageSerializer(serializers.ModelSerializer):
             user = self.context['request'].user
             return user != obj.sender
         except KeyError:
-            #print('Request not passed to context')
+            print('Request not passed to context')
             raise APIException()
 
     class Meta:
@@ -40,6 +40,35 @@ class ChatSerializer(serializers.ModelSerializer):
         except KeyError:
             #print('Request not passed to context chat')
             raise APIException()
+
+    class Meta:
+        model = Chat
+        fields = ('uuid', 'date_created', 'user','messages',)
+        read_only_fields = ('uuid', 'date_created', 'user',)
+
+class ChatListSerializer(serializers.ModelSerializer):
+    user = serializers.SerializerMethodField('get_other_user')
+    messages=serializers.SerializerMethodField(read_only=True)
+    def get_other_user(self, obj):
+        """
+        Returns the other users model.
+        """
+        try:
+            #print(self.context.get('request').user)
+            if obj.user1_id == self.context['request'].user.id:
+                return UserSerializer(obj.user2).data
+
+            return UserSerializer(obj.user1).data
+        except KeyError:
+            #print('Request not passed to context chat')
+            raise APIException()
+
+    def get_messages(self, obj):
+        """
+        Returns latest unread messages
+        """
+    
+        return ChatMessageSerializer(instance=obj.messages.filter(is_read=False).exclude(sender=self.context['request'].user),context={'request': self.context['request']},many=True).data
 
     class Meta:
         model = Chat
