@@ -66,7 +66,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 try:
                     # create message then send to channel group
                     msg_obj = await self.create_message(message, sender, uuid)
-                    print("Sending")
                     await self.channel_layer.group_send(
                         self.room_name,
                         {
@@ -101,16 +100,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         }))
 
-    '''
-    This method changes the 'read' field
-    of all relevent Messages in the database to 'True'. 
-    '''
-    async def _messages_read(self,chat,user):
-        query = ChatMessage.objects.filter(chat=chat).exclude(sender=user)
-        print(query)
-        for message in query:
-            message.is_read = True
-            message.save()   
 
 
 

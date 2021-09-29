@@ -15,6 +15,7 @@ function App() {
         <Router>
             <Navbar/>
             <Switch>
+              
                   <Route path='/' component={Home} exact/>
                   <Route path='/login' component={()=><Login />}exact/>
                   <Route path='/doctor-signup' component={()=><Doctor/>} exact/>

@@ -19,10 +19,9 @@ class CreateUserView(generics.CreateAPIView):
 
 @api_view(['GET', ])
 def speciality_doctors(request,slug):
-    print(request.user)
     doctors = User.objects.filter(is_doctor=True,speciality=slug)
     serializer = UserSerializer(doctors,many=True) 
-    return Response(serializer.data,)       
+    return Response(serializer.data,status=HTTP_200_OK)       
 
 @api_view(["POST"])
 def signin(request):
@@ -58,4 +57,4 @@ def logout(request):
     user.status=0
     
     user.save()
-    return Response({"message":"Successfully logged out"})       
+    return Response({"message":"Successfully logged out"},status=HTTP_200_OK)       

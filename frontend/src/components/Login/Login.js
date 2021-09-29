@@ -15,7 +15,7 @@ function Login() {
         let form_data = new FormData();
         form_data.append('email', email);
         form_data.append('password', password);
-        let url = 'http://127.0.0.1:8000/api/login/';
+        let url = `${process.env.REACT_APP_BACKEND_URL}/api/login/`;
         axios.post(url, form_data, {
           headers: {
             'content-type': 'multipart/form-data'

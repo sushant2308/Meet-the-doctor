@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Redirect } from 'react-router-dom';
 import './Register.css'
 class Doctor extends Component {
+  //Registration Form for Doctor
+  //is_doctor value intialised to be True
     state = {
         name: '',
         email: '',
@@ -28,7 +30,7 @@ class Doctor extends Component {
         form_data.append('address', this.state.address);
         form_data.append('is_doctor', this.state.is_doctor);
         form_data.append('speciality', this.state.speciality);
-        let url = `http://127.0.0.1:8000/api/register/`;
+        let url = `${process.env.REACT_APP_BACKEND_URL}/api/register/`;
         axios.post(url, form_data, {
           headers: {
             'content-type': 'multipart/form-data'

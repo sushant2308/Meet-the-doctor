@@ -13,8 +13,9 @@ function ChatPage({ match}) {
 	const [newMsg, setNewMsg] = useState("");
 	const token = localStorage.getItem('token')
 	useEffect(() => {
-		ws.current = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${chat_uuid}/?token=${token}`);
-		// ws.current.onopen = e => console.log('Chat socket opened');
+
+		//Opens a socket connection with backend 
+		ws.current = new WebSocket(`${process.env.REACT_APP_BACKEND_URL_WS}/ws/chat/${chat_uuid}/?token=${token}`);
 		ws.current.onerror = e => alert(e);
 		ws.current.onmessage = e => {
 			const msg = JSON.parse(e.data);
@@ -22,9 +23,9 @@ function ChatPage({ match}) {
 			if (msg.type === 'error') console.log(msg.data.message);
 			else if (msg.type === 'chat_message') setNotifications(msg.data.message);
 		};
-		console.log(notifications)
-		// load previous chat messages
-		axios.get(`http://127.0.0.1:8000/chat/get_chat/${chat_uuid}/`,{
+
+		// load previous chat messages on useffect update i.e on start or new notification
+		axios.get(`${process.env.REACT_APP_BACKEND_URL}/chat/get_chat/${chat_uuid}/`,{
 			headers: {
 				"Authorization": `token ${token}`
 			  }
@@ -36,13 +37,15 @@ function ChatPage({ match}) {
 }
 		  
         );
+
+		//Updates backend about message been read
 		ws.current.onopen = () => {
 			ws.current.send(JSON.stringify({type:"read"}));
 		  };
 		
 		return () => ws.current.close();
 	}, [notifications]);
-	console.log(messages)
+
 	const sendNewMsg = e => {
 		e.preventDefault();
 
@@ -54,7 +57,8 @@ function ChatPage({ match}) {
 			setNewMsg('');
 		}
 	};
-	console.log()
+
+	
 	// submit form when enter pressed in text area
 	const onKeyDown = e => {
 		if (e.keyCode === 13 && e.shiftKey === false && newMsg) sendNewMsg(e);

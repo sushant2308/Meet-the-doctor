@@ -9,7 +9,8 @@ function Navbar() {
 
   const dispatch = useDispatch();
   function loggedout(){
-    const res=axios.get(`http://127.0.0.1:8000/api/logout/`,{headers: {
+    //sents a logout request to backend &removes token from url
+    axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/logout/`,{headers: {
       "Authorization": `token ${localStorage.getItem('token')}`
     }})
     localStorage.removeItem('token')

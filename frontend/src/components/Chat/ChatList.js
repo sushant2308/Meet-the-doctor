@@ -8,10 +8,11 @@ function ChatList() {
     const [chats,setchat]=useState([]) 
 	const token = localStorage.getItem('token')
 	useEffect(() => {
+		//Interval Polling to update chat list
         const fetchData = async ()=>{
             try {
               let data=[]
-              const res = await axios.get(`http://127.0.0.1:8000/chat/user_chatlist/`,{
+              const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/chat/user_chatlist/`,{
 				headers: {
 					'Authorization': `token ${token}`
 				  }
@@ -28,6 +29,7 @@ function ChatList() {
             }
         }
 		const interval = setInterval(() => {
+
 			fetchData();
 		  }, 1000);
 		return () => clearInterval(interval);

@@ -3,7 +3,7 @@ import axios from 'axios';
 import {useHistory} from 'react-router-dom';
 import { useSelector} from "react-redux";
 function Specialist({ match }) {
-    const name=match.params.id
+    const name=match.params.id //speciality 
     const [q,setq]=useState("")
     const [Data,setData] = useState([]);
     const isloggedin = useSelector(state => state.updatelogin);
@@ -14,7 +14,7 @@ function Specialist({ match }) {
         try {
           let data=[]
           
-          const res = await axios.get(`http://127.0.0.1:8000/api/speciality/${name}/`,
+          const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/speciality/${name}/`,
           );
           for(const dataobj of res.data){
               data.push(dataobj);
@@ -31,14 +31,13 @@ function Specialist({ match }) {
     fetchData();
   
     },[name,]);
-    console.log(Data)
     function createchat(id){
         if(isloggedin){
             if(localStorage.getItem("userId")===id){
                 alert('You cannot start chat with yourself ')
             }
             else{
-              axios.get(`http://127.0.0.1:8000/chat/create_chat/${id}/`,{
+              axios.get(`${process.env.REACT_APP_BACKEND_URL}/chat/create_chat/${id}/`,{
                 headers: {
                   "Authorization": `token ${token}`
                 }
@@ -56,6 +55,7 @@ function Specialist({ match }) {
 
     }
     function search(data){
+      //Searching based on Name and address
       return data.filter((doctor)=>doctor.name.toLowerCase().indexOf(q)>-1 || doctor.address.toLowerCase().indexOf(q)>-1)
      
    }

@@ -9,3 +9,5 @@ export const logout = () => {
         type: 'LOGOUT'
     }
 };
+
+//Actions for Redux
